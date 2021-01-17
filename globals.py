@@ -5,49 +5,52 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from navigation import NavigationToolbar
 
 def init():
-    global root, figure, font_heading, SHEET_NAME, plot, canvas,\
-        toolbar, control_frame, result_frame, plotframe, toolbarframe,\
-        directory_name_frames, durationframe, headers, Fs, times, labels, \
-        file_path, time, row_count, ecg1, ecg2, directory_name_frame, result_frame
+    global canvas, control_frame, directory_name_frames, durationframe,\
+        ecg1, ecg2, root, figure, file_path, font_heading, Fs, headers,\
+        labels, plot, plotframe, result_frame, root, row_count SHEET_NAME, time,\
+        times, toolbar, toolbarframe         
 
+    ecg1 = list()
+    ecg2 = list()
+    file_path = ""
+    font_heading = "sans-serif 12"
+    Fs = 250
+    headers = 3
+    result_frame = ""
     root = Tk()
     root.title("HR variability")
     root.geometry("900x600")
-    directory_name_frame = ""
-    result_frame = ""
-    headers = 3
-    Fs = 250
-    SHEET_NAME = 'ECG'
-    file_path = ""
-    time = list()
     row_count = 0
-    ecg1 = list()
-    ecg2 = list()
-    font_heading = "sans-serif 12"
+    SHEET_NAME = 'ECG'
+    time = list()
     
+#   Define frames for plot and navigation toolbar to allow grid/pack to work together
     plotframe = Frame(root)
     toolbarframe = Frame(root)
 
-    plt.gcf().subplots_adjust(bottom=0.15)
-    
+#   Initialize figure/plot
+    plt.gcf().subplots_adjust(bottom=0.15)  
     figure = plt.figure(figsize=(6, 3), dpi=100)
     plot = figure.add_subplot(1, 1, 1)
     
+#   Set x-y plot labels
     plot.set_ylabel("Amplitude (mV)")
     plot.set_xlabel(xlabel="Time (s)")
-    
+
+#   Ensure spacing between axes and x-ylabels
     plt.tight_layout()
     
+#   Initialize plot and toolbar widgits
     canvas = FigureCanvasTkAgg(figure, plotframe)
-    
     toolbar = NavigationToolbar(canvas, toolbarframe)
     
-    durationframe = LabelFrame(root, text="Trial duration", font=font_heading, pady=3)
+#   Initialize control, duration and result frame/boxes
     directory_name_frames = Frame(root, pady=3)
-
+    durationframe = LabelFrame(root, text="Trial duration", font=font_heading, pady=3)
     control_frame = LabelFrame(root, text="Plot controls", font=font_heading, pady=3)
     result_frame = LabelFrame(root, text="Trial detials", font=font_heading, pady=3)
     
+#   Initialize times dictionary containing user input objects to pass to display
     times= {
         "start_hr" : Entry(durationframe, width=5),
         "start_min" : Entry(durationframe, width=5),
@@ -57,6 +60,7 @@ def init():
         "end_sec" : Entry(durationframe, width=5),    
     }   
 
+#   Initialize labels dictionary containing Label objects to pass to display
     labels = {
         "file" : Label(directory_name_frames, text="File pending selection...", font=font_heading),
         "hr" : Label(durationframe, text="hr", font=font_heading),
